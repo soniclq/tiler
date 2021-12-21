@@ -2,7 +2,7 @@
 
 # number of divisions per channel (R, G and B)
 # DEPTH = 4 -> 4 * 4 * 4 = 64 colors
-DEPTH = 4
+DEPTH = 6
 # list of rotations, in degrees, to apply over the original image
 ROTATIONS = [0]
 
@@ -33,3 +33,6 @@ OUT = 'out.png'
 IMAGE_TO_TILE = None
 # folder with tiles (ignored if passed as the 2nd arg)
 TILES_FOLDER = None
+
+TILES_LIST = ["./tiles/square/gen_square_50/"]
+LIST_MAP = {"./tiles/square/gen_square_50/":"pixel"}

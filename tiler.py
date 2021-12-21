@@ -23,6 +23,8 @@ POOL_SIZE = conf.POOL_SIZE
 OVERLAP_TILES = conf.OVERLAP_TILES
 
 
+TILES_LIST = conf.TILES_LIST
+
 # reduces the number of colors in an image
 def color_quantization(img, n_colors):
     return np.round(img / 255 * n_colors) / n_colors * 255
@@ -200,23 +202,27 @@ def main():
     else:
         image_path = conf.IMAGE_TO_TILE
 
-    if len(sys.argv) > 2:
-        tiles_paths = sys.argv[2:]
-    else:
-        tiles_paths = conf.TILES_FOLDER.split(' ')
+    # if len(sys.argv) > 2:
+    #     tiles_paths = sys.argv[2:]
+    # else:
+    #     tiles_paths = conf.TILES_FOLDER.split(' ')
 
-    if not os.path.exists(image_path):
-        print('Image not found')
-        exit(-1)
-    for path in tiles_paths:
-        if not os.path.exists(path):
-            print('Tiles folder not found')
+    for tilepath in TILES_LIST:
+
+        if not os.path.exists(image_path):
+            print('Image not found')
             exit(-1)
-
-    tiles = load_tiles(tiles_paths)
-    boxes, original_res = get_processed_image_boxes(image_path, tiles)
-    img = create_tiled_image(boxes, original_res, render=conf.RENDER)
-    cv2.imwrite(conf.OUT, img)
+    # for path in tiles_paths:
+    #     if not os.path.exists(path):
+    #         print('Tiles folder not found')
+    #         exit(-1)
+        tiles_paths = []
+        tiles_paths.append(tilepath)
+        tiles = load_tiles(tiles_paths)
+        boxes, original_res = get_processed_image_boxes(image_path, tiles)
+        img = create_tiled_image(boxes, original_res, render=conf.RENDER)
+        outfile = image_path.split(".")[0] +"_"+conf.LIST_MAP[tilepath]+".png"
+        cv2.imwrite(outfile, img)
 
 
 if __name__ == "__main__":
