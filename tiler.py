@@ -1,3 +1,6 @@
+import glob
+from pathlib import Path
+
 import cv2
 import numpy as np
 import os
@@ -198,31 +201,36 @@ def create_tiled_image(boxes, res, render=False):
 # main
 def main():
     if len(sys.argv) > 1:
-        image_path = sys.argv[1]
+        image_paths = sys.argv[1]
     else:
-        image_path = conf.IMAGE_TO_TILE
+        image_paths = conf.IMAGE_TO_TILE
 
+    pict_dir = os.path.join(image_paths, "*.*")
+    image_paths = sorted(glob.glob(pict_dir))
+    # image_paths = os.listdir()
     # if len(sys.argv) > 2:
     #     tiles_paths = sys.argv[2:]
     # else:
     #     tiles_paths = conf.TILES_FOLDER.split(' ')
 
-    for tilepath in TILES_LIST:
+    for image_path in image_paths:
 
-        if not os.path.exists(image_path):
-            print('Image not found')
-            exit(-1)
-    # for path in tiles_paths:
-    #     if not os.path.exists(path):
-    #         print('Tiles folder not found')
-    #         exit(-1)
-        tiles_paths = []
-        tiles_paths.append(tilepath)
-        tiles = load_tiles(tiles_paths)
-        boxes, original_res = get_processed_image_boxes(image_path, tiles)
-        img = create_tiled_image(boxes, original_res, render=conf.RENDER)
-        outfile = image_path.split(".")[0] +"_"+conf.LIST_MAP[tilepath]+".png"
-        cv2.imwrite(outfile, img)
+        for tilepath in TILES_LIST:
+
+            if not os.path.exists(image_path):
+                print('Image not found')
+                exit(-1)
+        # for path in tiles_paths:
+        #     if not os.path.exists(path):
+        #         print('Tiles folder not found')
+        #         exit(-1)
+            tiles_paths = []
+            tiles_paths.append(tilepath)
+            tiles = load_tiles(tiles_paths)
+            boxes, original_res = get_processed_image_boxes(image_path, tiles)
+            img = create_tiled_image(boxes, original_res, render=conf.RENDER)
+            outfile = Path(image_path).resolve().stem +"_"+conf.LIST_MAP[tilepath]+".png"
+            cv2.imwrite(outfile, img)
 
 
 if __name__ == "__main__":
